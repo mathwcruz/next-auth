@@ -36,7 +36,7 @@ export function withSSRAuth<P>(fn: GetServerSideProps<P>, options?: WithSSRAuthO
       const user = decode<{ permissions: string[], roles: string[] }>(token); // decodificando o token salvo nos cookies com os dados do usuário
       const { permissions, roles } = options; // buscando as roles e permissions necessárias para aquela página, para validar o acesso do usuário
 
-      const userHasValidPermissions = validateUserPermissions({
+      const userHasValidPermissions = validateUserPermissions({ // validando as permissões do user
         user,
         permissions,
         roles,

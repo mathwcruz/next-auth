@@ -1,21 +1,11 @@
-import { useEffect } from "react";
+import { useAuth } from "../contexts/AuthContext";
 import { Can } from "../components/Can";
 
-import { useAuth } from "../contexts/AuthContext";
-
 import { setupAPIClient } from "../services/api";
-import { api } from "../services/apiClient";
-
 import { withSSRAuth } from "../utils/withSSRAuth";
 
 export default function Dashboard() {
   const { user, signOut } = useAuth();
-
-  useEffect(() => {
-    api.get("/me")
-    .then(response => {
-    });
-  }, [])
 
   return (
     <>
@@ -32,8 +22,11 @@ export default function Dashboard() {
 
 export const getServerSideProps = withSSRAuth(async (ctx) => {
   const apiClient = setupAPIClient(ctx); // buscando os cookies por lado do servidor
+  const { data } = await apiClient.get("/me");
 
   return {
-    props: {},
+    props: {
+      user: data,
+    },
   };
 });

@@ -11,12 +11,14 @@ export default function Metrics() {
 
 export const getServerSideProps = withSSRAuth(async (ctx) => {
   const apiClient = setupAPIClient(ctx); // buscando os cookies por lado do servidor
-  const response = await apiClient.get("/me");
+  const { data } = await apiClient.get("/me");
 
   return {
-    props: {},
+    props: {
+      metrics: data,
+    },
   };
-}, {
+}, { // objeto contendo opções de permissões e roles para autenticar o usuário, se ele pode ver essa página
   permissions: ["metrics.list"],
   roles: ["administrator"],
 });

@@ -31,12 +31,12 @@ const AuthContext = createContext({} as AuthContextData);
 let authChannel: BroadcastChannel; // declarando a variável fora do escopo pois deve-se usar ela apenas no client ()browser e não no lado do server
 
 export const signOut = () => {
-  destroyCookie(undefined, 'nextauth.token');
-  destroyCookie(undefined, 'nextauth.refreshToken');
+  destroyCookie(undefined, 'nextauth.token'); // limpando o token dos cookies
+  destroyCookie(undefined, 'nextauth.refreshToken'); // limpando o refresh token dos cookies
 
   authChannel.postMessage('signOut'); // "enviado" uma mensagem a todos as abas que consomem este canal
 
-  Router.push("/")
+  Router.push("/");
 };
 
 export const AuthProvider = ({ children }: AuthProviderProps) => {
@@ -65,8 +65,9 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     const { 'nextauth.token': token } = parseCookies(); // pegando o token salvo nos cookies
 
     if (token) {
-      api.get("/me").then(response => {
-        const { email, permissions, roles } = response.data; // pegando os dados trazidos pela requisição ao backend
+      api.get("/me")
+      .then(response => {
+        const { email, permissions, roles } = response?.data; // pegando os dados trazidos pela requisição ao backend
 
         setUser({
           email,
@@ -85,16 +86,16 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
       const response = await api.post("/sessions", {
         email,
         password,
-      });
+      }); // autenticando o usuário
 
-      const { token, refreshToken, permissions, roles } = response.data;
+      const { token, refreshToken, permissions, roles } = response?.data;
 
       setCookie(undefined, "nextauth.token", token, {
-        maxAge: 60 * 60 * 24 * 30, // por quanto tempo quero deixar salvo no cookie este dado
+        maxAge: 60 * 60 * 24 * 30, // => 30 dias. Por quanto tempo quero deixar salvo no cookie este dado
         path: '/', // páginas do app que terão acesso a este cookie
-      }); // quando quer lidar com cookie mas a ação que requer autenticação depende de uma ação do usuário, passa-se undefined como primeiro parametro, segundo parametro é o nome do cookie, o terceiro é o dado para ser armazenado no cookie e o ultimo são configurações
+      }); // quando quer lidar com cookie mas a ação roda apenas no browser, passa-se undefined como primeiro parametro, segundo parametro é o nome do cookie a ser salvo, o terceiro é o dado para ser armazenado no cookie e o último são configurações
       setCookie(undefined, "nextauth.refreshToken", refreshToken , {
-        maxAge: 60 * 60 * 24 * 30,
+        maxAge: 60 * 60 * 24 * 30, // => 30 dias
         path: '/',
       });
 
@@ -106,9 +107,9 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
 
       api.defaults.headers['Authorization'] = `Bearer ${token}`; // após logar na app, enviando nas requisições, o token para autenticação do usuário
 
-      Router.push("/dashboard");
+      Router.push("/dashboard"); // redirecionando o usuário
 
-      authChannel.postMessage("signIn");
+      authChannel.postMessage("signIn"); // postando uma mensagem de "signIn" no canal
     } catch (error) {
       console.log(error.message);
     };

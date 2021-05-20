@@ -5,9 +5,9 @@ import { signOut } from "../contexts/AuthContext";
 import { AuthTokenError } from "./errors/AuthTokenError";
 
 let isRefreshing = false;
-let failedRequestsQueue = [];
+let failedRequestsQueue = []; // fila de requisições
 
-export const setupAPIClient = (ctx = undefined) => {
+export const setupAPIClient = (ctx = undefined) => { // recebe o contexto para lidar com os cookies
   let cookies = parseCookies(ctx); // pegando os cookies por meio do servidor
 
   const api = axios.create({
@@ -25,13 +25,13 @@ export const setupAPIClient = (ctx = undefined) => {
     },
     (error: AxiosError) => {
       // segundo parametro informa o que fazer caso a requisição de erro, intercepte algo
-      if (error.response.status === 401) {
-        if (error.response.data?.code === "token.expired") {
+      if (error?.response?.status === 401) {
+        if (error?.response?.data?.code === "token.expired") {
           // verificando se o error que ocorreu, foi de token expirado
-          cookies = parseCookies(ctx); // buscando dados dos cookies recentes
+          cookies = parseCookies(ctx); // buscando dados atualizados salvos nos cookies
 
           const { "nextauth.refreshToken": refreshToken } = cookies; // buscando o refreshToken dos cookies
-          const originalConfig = error.config; // configuração da requisição ao back end
+          const originalConfig = error?.config; // configuração da requisição ao back end
 
           if (!isRefreshing) {
             isRefreshing = true;
@@ -42,7 +42,7 @@ export const setupAPIClient = (ctx = undefined) => {
                 refreshToken,
               })
               .then((response) => {
-                const { token } = response.data; // buscando o novo token gerado pelo back end
+                const { token } = response?.data; // buscando o novo token gerado pelo back end
 
                 setCookie(ctx, "nextauth.token", token, {
                   maxAge: 60 * 60 * 24 * 30, // => 30 dias
@@ -52,35 +52,37 @@ export const setupAPIClient = (ctx = undefined) => {
                 setCookie(
                   ctx,
                   "nextauth.refreshToken",
-                  response.data.refreshToken,
+                  response?.data?.refreshToken,
                   {
                     maxAge: 60 * 60 * 24 * 30,
                     path: "/",
                   }
                 ); // atualizado o refreshToken que o back end acabou de gerar para salvar nos cookies
 
-                api.defaults.headers["Authorization"] = `Bearer ${token}`;
+                api.defaults.headers["Authorization"] = `Bearer ${token}`; // atualizando o token que está sendo enviado nas requisições
 
                 failedRequestsQueue.forEach((request) =>
-                  request.onSuccess(token)
+                  request.onSuccess(token) // nova chamada a api com o token atualizado
                 );
+
                 failedRequestsQueue = [];
               })
               .catch((err) => {
                 failedRequestsQueue.forEach((request) =>
                   request.onFailure(err)
                 );
+
                 failedRequestsQueue = [];
 
-                if (process.browser) {
+                if (process?.browser) {
                   // indica se o código está sendo executado do lado do browser ou do servidor
                   signOut(); // deslogando o usuário caso esteja rodando no browser
-                }
+                };
               })
               .finally(() => {
                 isRefreshing = false;
               });
-          }
+          };
 
           return new Promise((resolve, reject) => {
             failedRequestsQueue.push({
@@ -88,7 +90,7 @@ export const setupAPIClient = (ctx = undefined) => {
                 // o que irá acontecer quando o processo de refresh do token finalizar
                 originalConfig.headers["Authorization"] = `Bearer ${token}`; // envia o token atualizado
 
-                resolve(api(originalConfig));
+                resolve(api(originalConfig)); // chamando novamente a api, com o token att
               },
               onFailure: (err: AxiosError) => {
                 // o que irá acontecer caso o processo do refresh token tenha dado errado
@@ -97,16 +99,16 @@ export const setupAPIClient = (ctx = undefined) => {
             });
           });
         } else {
-          if (process.browser) {
+          if (process?.browser) {
             signOut(); // deslogando o usuário caso esteja rodando no browser
           } else {
-            return Promise.reject(new AuthTokenError());
+            return Promise.reject(new AuthTokenError()); // retornando um erro ao server side
           };
-        }
-      }
+        };
+      };
 
       return Promise.reject(error);
-    }
+    },
   );
 
   return api;

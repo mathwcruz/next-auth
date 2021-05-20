@@ -13,7 +13,7 @@ export const useCan = ({ permissions, roles }: UseCanParams) => {
     return false;
   };
 
-  const userHasValidPermissions = validateUserPermissions({
+  const userHasValidPermissions = validateUserPermissions({ // validando as permissões e roles do user
     user,
     permissions,
     roles,

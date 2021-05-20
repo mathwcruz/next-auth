@@ -1,4 +1,3 @@
-import { GetServerSideProps } from "next";
 import { FormEvent, useState } from "react";
 
 import { useAuth } from "../contexts/AuthContext";
