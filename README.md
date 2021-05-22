@@ -43,7 +43,7 @@ To run the application on the web, follow the instructions from your terminal:
 - After that, run `yarn dev` to run the application, will open at the address `localhost:3000`
 
 To run the application on the server side, follow the instructions from your terminal:
-- `git clone https://github.com/rocketseat-education/ignite-reactjs-auth-backend.git` and `code .`
+- `git clone https://github.com/rocketseat-education/ignite-reactjs-auth-backend.git`,  `cd ignite-reactjs-auth-backend` and `code .`
 - run `yarn` to install the dependencies of the project
 - After that, run `yarn dev` to run the application, will open at the address `localhost:3333`
 
