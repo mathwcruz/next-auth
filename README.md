@@ -2,11 +2,11 @@
   next-auth
 </h1>
 
-## **<h2 align="center">Front end application  💻</h2>**
+<h2 align="center">Front end application  💻</h2>
 
-## <p><h2 align="center">An app using NextJS authentication</h2> </p>
+<h2 align="center">An app using NextJS authentication</h2>
 
-## <p align="center"> <img src="./.github/Ignite.png" width="1400px"/> </p>
+<p align="center"> <img src="./.github/Ignite.png" width="1400px"/> </p>
 
 ## :rocket: Technologies used:
 
@@ -63,4 +63,4 @@ Desenvolvido por Matheus da Cruz 😊
 [![Gmail Badge](https://img.shields.io/badge/-matheuswachcruz@gmail.com-c14438?style=flat-square&logo=Gmail&logoColor=white&link=mailto:matheuswachcruz@gmail.com)](mailto:matheuswachcruz@gmail.com)
 <br>
 
-### <p> <h2 align="center">Another application by Matheus da Cruz 👨‍💻 </h2> </p>
+<h2 align="center">Another application developed by Matheus da Cruz 👨‍💻 </h2>
